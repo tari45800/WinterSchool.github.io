@@ -1,10 +1,10 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { db } from "../Firebase";
-import { collection, getDocs, addDoc } from "firebase/firestore/lite";
+import { collection, setDoc, getDocs, doc } from "firebase/firestore/lite";
 
 const FormContainer = styled.div`
-  color: Form;
+  color: crimson;
 `;
 
 function Form() {
@@ -15,7 +15,13 @@ function Form() {
   };
 
   const addData = async () => {
-    addDoc(collection(db, "information"), { 이름: formData });
+    const query = await getDocs(collection(db, "information"));
+    await setDoc(
+      // query.docs 독스에 데이터가 들어가 있습니다.
+      doc(db, "information", `학생${Object.keys(query.docs).length + 1}`),
+      { 이름: formData }
+    );
+
     setFormData("");
   };
 

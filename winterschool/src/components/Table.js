@@ -8,13 +8,17 @@ const TableContainer = styled.div`
 `;
 
 function Table() {
+  const [el, setEl] = useState(null);
+
+  const handleEl = (els) => {
+    setEl(els);
+  };
+
   useEffect(() => {
     const getData = async () => {
       try {
         const query = await getDocs(collection(db, "information"));
-        query.forEach((doc) => {
-          console.log(doc.id, doc.data());
-        });
+        handleEl(query.docs);
       } catch (error) {
         console.error("데이터를 불러오는 중 오류 발생:", error);
       }
@@ -23,7 +27,19 @@ function Table() {
     getData();
   }, []);
 
-  return <TableContainer></TableContainer>;
+  return (
+    <TableContainer>
+      {el &&
+        el.map((doc) => {
+          return (
+            <>
+              <div>{doc.id}</div>
+              <div>{JSON.stringify(doc.data())}</div>
+            </>
+          );
+        })}
+    </TableContainer>
+  );
 }
 
 export default Table;
